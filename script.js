@@ -1,3 +1,17 @@
+// ===================================================
+// গিটহাব ইমেজ কনফিগারেশন (GitHub Image Configuration)
+// ===================================================
+// নিচের তথ্যগুলো আপনার গিটহাব রিপোজিটরি অনুযায়ী পরিবর্তন করুন:
+
+const GITHUB_USERNAME = 'আপনার_গিটহাব_ইউজারনেম'; // যেমন: himel-hemu
+const GITHUB_REPO = 'আপনার_রিপোজিরি_নাম';       // যেমন: gemini-masterclass
+const GITHUB_BRANCH = 'main';                    // সাধারণত 'main' বা 'master' হয়
+const IMAGE_FOLDER = 'images';                   // যে ফোল্ডারে ছবি রেখেছেন
+const IMAGE_EXTENSION = '.jpg';                  // ছবির ফরম্যাট (.jpg বা .png)
+
+// ===================================================
+
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
     const chapterList = document.getElementById('chapter-list');
@@ -6,7 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const readerPage = document.getElementById('reader-page');
     const sidebar = document.getElementById('sidebar');
 
-    // --- ১. ইভেন্ট লিসেনার (বাটনগুলো যাতে আগে লোড হয়) ---
+    // গিটহাবের বেস URL তৈরি করা হচ্ছে
+    const githubBaseUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/${GITHUB_BRANCH}/${IMAGE_FOLDER}/`;
+
+
+    // --- ১. ইভেন্ট লিসেনার ---
     
     // "শেখা শুরু করুন" বাটন
     const startBtn = document.getElementById('start-reading-btn');
@@ -24,13 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // মোবাইল মেনু টগল বাটন
+    // মোবাইল মেনু বাটন
     const toggleBtn = document.getElementById('toggle-sidebar');
     if(toggleBtn) {
         toggleBtn.addEventListener('click', () => sidebar.classList.add('active'));
     }
-
-    // সাইডবার বন্ধ করার বাটন
     const closeBtn = document.getElementById('close-sidebar');
     if(closeBtn) {
         closeBtn.addEventListener('click', () => sidebar.classList.remove('active'));
@@ -60,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const activeIcon = li.querySelector('i');
                 if(activeIcon) activeIcon.className = 'fas fa-check-circle';
                 
-                // মোবাইল সাইডবার বন্ধ করা
                 if(window.innerWidth < 768) {
                     sidebar.classList.remove('active');
                 }
@@ -72,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadContent(index) {
         const chapter = bookData[index];
         
-        // অর্ডার বাটন
         const orderButton = `
             <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
                 <p style="text-align: center; color: #666;">আপনি কি এরকম অ্যাপ বা ওয়েবসাইট বানাতে চান?</p>
@@ -94,25 +108,28 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        // --- ERROR FIX: Image Replacement (Safe Mode) ---
+        // --- GitHub Image Replacement Logic ---
         try {
-            // আমরা এখানে Regex Literal এর বদলে String Constructor ব্যবহার করছি যাতে কপি-পেস্টে সমস্যা না হয়
             const regex = new RegExp("\\", "g");
             
             rawContent = rawContent.replace(regex, function(match, text) {
-                const cleanText = text.trim();
-                return `<img src="https://via.placeholder.com/600x350?text=${encodeURIComponent(cleanText)}" alt="${cleanText}" style="width:100%; border-radius:8px; margin:15px 0;">`;
+                const filename = text.trim();
+                // ফাইলের নাম এবং এক্সটেনশন যোগ করে URL এনকোড করা হচ্ছে
+                const fullFilenameEncoded = encodeURIComponent(filename + IMAGE_EXTENSION);
+                const finalImageUrl = githubBaseUrl + fullFilenameEncoded;
+
+                // onerror যুক্ত করা হয়েছে: যদি গিটহাবে ছবি না থাকে, তবে প্লেসহোল্ডার দেখাবে
+                return `<img src="${finalImageUrl}" alt="${filename}" style="width:100%; border-radius:8px; margin:15px 0;" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x350?text=Image+Not+Found';">`;
             });
         } catch (error) {
             console.error("Image replacement failed:", error);
-            // ইমেজ রিপ্লেসমেন্ট ফেইল করলেও টেক্সট দেখাবে
         }
 
         bookContent.innerHTML = rawContent;
         document.querySelector('.content-area').scrollTop = 0;
     }
 
-    // গ্লোবাল ফাংশন (নেক্সট বাটনের জন্য)
+    // গ্লোবাল ফাংশন
     window.nextChapter = (currentIndex) => {
         if(currentIndex + 1 < bookData.length) {
             const nextItem = chapterList.children[currentIndex + 1];
