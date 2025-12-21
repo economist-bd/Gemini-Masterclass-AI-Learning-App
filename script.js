@@ -1,13 +1,12 @@
 // ===================================================
 // গিটহাব ইমেজ কনফিগারেশন (GitHub Image Configuration)
 // ===================================================
-// নিচের তথ্যগুলো আপনার গিটহাব রিপোজিটরি অনুযায়ী পরিবর্তন করুন:
 
-const GITHUB_USERNAME = 'economist-bd'; // যেমন: himel-hemu
-const GITHUB_REPO = 'Gemini-Masterclass-AI-Learning-App';       // যেমন: gemini-masterclass
-const GITHUB_BRANCH = 'main';                    // সাধারণত 'main' বা 'master' হয়
-const IMAGE_FOLDER = 'images';                   // যে ফোল্ডারে ছবি রেখেছেন
-const IMAGE_EXTENSION = '.jpg';                  // ছবির ফরম্যাট (.jpg বা .png)
+const GITHUB_USERNAME = 'economist-bd'; 
+const GITHUB_REPO = 'Gemini-Masterclass-AI-Learning-App';       
+const GITHUB_BRANCH = 'main';                    
+const IMAGE_FOLDER = 'images';                   
+const IMAGE_EXTENSION = '.jpg';                  
 
 // ===================================================
 
@@ -110,15 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- GitHub Image Replacement Logic ---
         try {
+            // Regex ব্যবহার করে  খুঁজে বের করা হচ্ছে
             const regex = new RegExp("\\", "g");
             
             rawContent = rawContent.replace(regex, function(match, text) {
                 const filename = text.trim();
-                // ফাইলের নাম এবং এক্সটেনশন যোগ করে URL এনকোড করা হচ্ছে
-                const fullFilenameEncoded = encodeURIComponent(filename + IMAGE_EXTENSION);
+                // ফাইলের নাম URL এনকোড করা হচ্ছে (যেমন: স্পেস থাকলে %20 হবে)
+                // আপনার দেওয়া কনফিগারেশন অনুযায়ী .jpg যুক্ত হবে
+                const fullFilenameEncoded = encodeURIComponent(filename) + IMAGE_EXTENSION;
                 const finalImageUrl = githubBaseUrl + fullFilenameEncoded;
 
-                // onerror যুক্ত করা হয়েছে: যদি গিটহাবে ছবি না থাকে, তবে প্লেসহোল্ডার দেখাবে
+                // ছবি লোড না হলে 'Image Not Found' দেখাবে
                 return `<img src="${finalImageUrl}" alt="${filename}" style="width:100%; border-radius:8px; margin:15px 0;" onerror="this.onerror=null;this.src='https://via.placeholder.com/600x350?text=Image+Not+Found';">`;
             });
         } catch (error) {
