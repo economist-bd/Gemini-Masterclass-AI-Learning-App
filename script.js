@@ -3,8 +3,8 @@
 // ===================================================
 // নিচের তথ্যগুলো আপনার গিটহাব রিপোজিটরি অনুযায়ী পরিবর্তন করুন:
 
-const GITHUB_USERNAME = 'আপনার_গিটহাব_ইউজারনেম'; // যেমন: himel-hemu
-const GITHUB_REPO = 'আপনার_রিপোজিরি_নাম';       // যেমন: gemini-masterclass
+const GITHUB_USERNAME = 'economist-bd'; // যেমন: himel-hemu
+const GITHUB_REPO = 'Gemini-Masterclass-AI-Learning-App';       // যেমন: gemini-masterclass
 const GITHUB_BRANCH = 'main';                    // সাধারণত 'main' বা 'master' হয়
 const IMAGE_FOLDER = 'images';                   // যে ফোল্ডারে ছবি রেখেছেন
 const IMAGE_EXTENSION = '.jpg';                  // ছবির ফরম্যাট (.jpg বা .png)
